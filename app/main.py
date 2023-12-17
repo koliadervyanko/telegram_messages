@@ -11,9 +11,9 @@ client = TelegramClient("name", id, hash)
 async def main():
     csv_parser = CsvParser("data.csv")
     csv_data = csv_parser.parse()
-    message_builder = MessageBuilder()
+    message_builder = MessageBuilder(client)
     message_parser = MessageParser(csv_data, client, message_builder)
-    await message_parser.get_messages()
+    messages = await message_parser.get_messages()
 
 
 if __name__ == "__main__":

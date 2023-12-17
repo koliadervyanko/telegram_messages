@@ -11,13 +11,16 @@ class MessageParser:
         self.message_builder = message_builder
 
     async def parse(self):
-        await self.get_messages()
+        messages = await self.get_messages()
+        return messages
 
     async def get_messages(self):
+        parsed_messages = []
         for link in self.__csv_data.links:
             for key_word in self.__csv_data.key_words:
                 messages = self.client.iter_messages(link, search=key_word)
                 message: Message
                 async for message in messages:
-                    built_message = self.message_builder.build(message)
-                    break
+                    built_message = await self.message_builder.build(link, message)
+                    parsed_messages.append(built_message)
+        return parsed_messages
