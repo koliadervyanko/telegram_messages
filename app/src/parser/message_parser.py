@@ -20,12 +20,19 @@ class MessageParser:
     async def get_messages(self):
         parsed_messages = []
         for link in self.__csv_data.links:
+            channel_entity = await self.client.get_entity(link)
+            print(f"Channel name: {channel_entity.title}")
             for key_word in self.__csv_data.key_words:
-                messages = self.client.iter_messages(link, search=key_word, reverse=True)
+                print(f"Key word: {key_word}")
+                messages = self.client.iter_messages(channel_entity, search=key_word, reverse=True)
                 current = 0
                 message: Message
                 async for message in messages:
-                    built_message = await self.message_builder.build(link, message)
+                    built_message = await self.message_builder.build(link, message, key_word)
+                    # print(built_message.replies)
+                    # for repl in built_message.replies:
+                    #     print(repl.link)
+                    #     print(repl.replies)
                     parsed_messages.append(built_message)
                     current += 1
                     print(f"Completed {current}")

@@ -1,9 +1,8 @@
 from telethon import TelegramClient
 
-from src.db_api_handler import DbApiHandler
+from src import MessageJsonConverter, DbApiHandler
 from src.env_reader import EnvReader
 from src.message_builder import MessageBuilder
-from src.message_json_converter import MessageJsonConverter
 from src.parser import CsvParser, MessageParser
 
 env_reader = EnvReader(".env")
@@ -27,4 +26,4 @@ if __name__ == "__main__":
         with client:
             client.loop.run_until_complete(main())
     except Exception as e:
-        print(f"Error in main: {e}")
+        print(f"Error: {e}")

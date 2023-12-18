@@ -8,13 +8,14 @@ class MessageBuilder:
     def __init__(self, client):
         self.client = client
 
-    async def build(self, link: str, message: Message) -> MessageDto:
+    async def build(self, link: str, message: Message, key_word: str) -> MessageDto:
         msg_link = self.generate_msg_link(link, message)
-        replies = await self.get_replies(message, link)
+        replies = await self.get_replies(message, link, key_word)
         user_data = await self.get_user_data(message)
         date = self.date_handling(message)
 
-        return MessageDto(user_data.username, user_data.name, message.message, msg_link, date, replies, message.id)
+        return MessageDto(user_data.username, user_data.name, message.message, msg_link, date, replies, message.id,
+                          key_word)
 
     @staticmethod
     def date_handling(message: Message):
@@ -22,14 +23,15 @@ class MessageBuilder:
         time = message.date.time()
         return f"{date} / {time}"
 
-    async def get_replies(self, message: Message, link: str):
+    async def get_replies(self, message: Message, link: str, key_word: str):
         replies_msgs = []
         replies_is_exists = bool(message.replies)
+        print(message.replies)
         if replies_is_exists:
             replies = self.client.iter_messages(link, reply_to=message.id)
             reply: Message
             async for reply in replies:
-                built_reply = await self.build(link, reply)
+                built_reply = await self.build(link, reply, key_word)
                 replies_msgs.append(built_reply)
         return None if replies_msgs == [] else replies_msgs
 
