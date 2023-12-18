@@ -11,10 +11,14 @@ class EnvReader:
         self.path = path
 
     def get_env_data(self) -> EnvDataDto:
-        self.load_env_file()
-        hash = os.getenv("HASH")
-        id = os.getenv("ID")
-        return EnvDataDto(hash, int(id))
+        try:
+            self.load_env_file()
+            hash = os.getenv("HASH")
+            id = os.getenv("ID")
+            print(".env parsed successfully")
+            return EnvDataDto(hash, int(id))
+        except Exception as e:
+            print(e)
 
     def load_env_file(self):
         dotenv_path = Path(self.path)

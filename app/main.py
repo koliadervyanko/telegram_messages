@@ -1,8 +1,10 @@
 from telethon import TelegramClient
 
-from src import CsvParser, MessageParser
+from src.db_api_handler import DbApiHandler
 from src.env_reader import EnvReader
 from src.message_builder import MessageBuilder
+from src.message_json_converter import MessageJsonConverter
+from src.parser import CsvParser, MessageParser
 
 env_reader = EnvReader(".env")
 env_data = env_reader.get_env_data()
@@ -15,6 +17,9 @@ async def main():
     message_builder = MessageBuilder(client)
     message_parser = MessageParser(csv_data, client, message_builder)
     messages = await message_parser.get_messages()
+    message_json_converter = MessageJsonConverter()
+    db_api_handler = DbApiHandler(messages, message_json_converter)
+    await db_api_handler.req()
 
 
 if __name__ == "__main__":

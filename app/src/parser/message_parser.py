@@ -1,7 +1,7 @@
 from telethon.types import Message
 
-from .dto.csv_data_dto import CsvDataDto
-from .message_builder import MessageBuilder
+from src.dto.csv_data_dto import CsvDataDto
+from src.message_builder import MessageBuilder
 
 
 class MessageParser:
@@ -11,8 +11,11 @@ class MessageParser:
         self.message_builder = message_builder
 
     async def parse(self):
-        messages = await self.get_messages()
-        return messages
+        try:
+            messages = await self.get_messages()
+            return messages
+        except Exception as e:
+            print(e)
 
     async def get_messages(self):
         parsed_messages = []

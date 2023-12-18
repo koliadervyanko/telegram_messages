@@ -1,6 +1,6 @@
 import csv
 
-from .dto.csv_data_dto import CsvDataDto
+from src.dto.csv_data_dto import CsvDataDto
 
 
 class CsvParser:
@@ -12,6 +12,7 @@ class CsvParser:
         try:
             links = self.__get_links()
             key_words = self.__get_key_words()
+            print(f"{self.__file_name} parsed successfully")
             return CsvDataDto(links, key_words)
         except Exception as e:
             print(e)
