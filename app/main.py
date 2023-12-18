@@ -1,11 +1,12 @@
 from telethon import TelegramClient
 
-from config import id, hash
-from src.csv_parser import CsvParser
+from src import CsvParser, MessageParser
+from src.env_reader import EnvReader
 from src.message_builder import MessageBuilder
-from src.message_parser import MessageParser
 
-client = TelegramClient("name", id, hash)
+env_reader = EnvReader(".env")
+env_data = env_reader.get_env_data()
+client = TelegramClient("name", env_data.id, env_data.hash)
 
 
 async def main():

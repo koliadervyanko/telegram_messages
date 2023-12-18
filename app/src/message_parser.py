@@ -18,9 +18,12 @@ class MessageParser:
         parsed_messages = []
         for link in self.__csv_data.links:
             for key_word in self.__csv_data.key_words:
-                messages = self.client.iter_messages(link, search=key_word)
+                messages = self.client.iter_messages(link, search=key_word, reverse=True)
+                current = 0
                 message: Message
                 async for message in messages:
                     built_message = await self.message_builder.build(link, message)
                     parsed_messages.append(built_message)
+                    current += 1
+                    print(f"Completed {current}")
         return parsed_messages

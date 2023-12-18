@@ -13,7 +13,7 @@ class MessageBuilder:
         replies = await self.get_replies(message, link)
         user_data = await self.get_user_data(message)
         date = message.date
-        return MessageDto(user_data.username, user_data.name, message.message, msg_link, date, replies)
+        return MessageDto(user_data.username, user_data.name, message.message, msg_link, date, replies, message.id)
 
     async def get_replies(self, message: Message, link: str):
         replies_msgs = []
@@ -24,7 +24,6 @@ class MessageBuilder:
             async for reply in replies:
                 built_reply = await self.build(link, reply)
                 replies_msgs.append(built_reply)
-        replies_msgs.reverse()
         return None if replies_msgs == [] else replies_msgs
 
     @staticmethod
