@@ -8,9 +8,9 @@ class MessageBuilder:
     def __init__(self, client):
         self.client = client
 
-    async def build(self, link: str, message: Message, key_word: str) -> MessageDto:
+    async def build(self, link: str, message: Message, key_word: str, use_replies: bool) -> MessageDto:
         msg_link = self.generate_msg_link(link, message)
-        replies = await self.get_replies(message, link, key_word)
+        replies = await self.get_replies(message, link, key_word) if use_replies else None
         user_data = await self.get_user_data(message)
         date = self.date_handling(message)
 
@@ -26,14 +26,14 @@ class MessageBuilder:
     async def get_replies(self, message: Message, link: str, key_word: str):
         replies_msgs = []
         replies_is_exists = bool(message.replies)
-        print(message.replies)
         if replies_is_exists:
             replies = self.client.iter_messages(link, reply_to=message.id)
             reply: Message
             async for reply in replies:
-                built_reply = await self.build(link, reply, key_word)
+                built_reply = await self.build(link, reply, key_word, False)
                 replies_msgs.append(built_reply)
-        return None if replies_msgs == [] else replies_msgs
+        replies_msgs.reverse()
+        return replies_msgs or None
 
     @staticmethod
     def generate_msg_link(link: str, message: Message) -> str:
