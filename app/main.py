@@ -1,16 +1,30 @@
-# This is a sample Python script.
+from telethon import TelegramClient
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from src import MessageJsonConverter, DbApiHandler
+from src.env_reader import EnvReader
+from src.message_builder import MessageBuilder
+from src.parser import CsvParser, MessageParser
+
+env_reader = EnvReader(".env")
+env_data = env_reader.get_env_data()
+client = TelegramClient("name", env_data.id, env_data.hash)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+async def main():
+    csv_parser = CsvParser("data.csv")
+    csv_data = csv_parser.parse()
+    message_builder = MessageBuilder(client)
+    message_parser = MessageParser(csv_data, client, message_builder)
+    messages = await message_parser.get_messages()
+    if messages:
+        message_json_converter = MessageJsonConverter()
+        db_api_handler = DbApiHandler(messages, message_json_converter)
+        await db_api_handler.req()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    try:
+        with client:
+            client.loop.run_until_complete(main())
+    except Exception as e:
+        print(f"Error: {e}")
