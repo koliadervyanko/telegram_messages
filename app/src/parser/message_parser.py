@@ -13,9 +13,10 @@ class MessageParser:
     async def parse(self):
         try:
             messages = await self.get_messages()
+            print("All message parsed successfully")
             return messages
         except Exception as e:
-            print(e)
+            print(f"Error parsing messages: {e}")
 
     async def get_messages(self):
         parsed_messages = []
@@ -27,9 +28,13 @@ class MessageParser:
                 messages = self.client.iter_messages(channel_entity, search=key_word)
                 current = 0
                 message: Message
+                print(f"Date: {self.__csv_data.date}")
                 async for message in messages:
-                    built_message = await self.message_builder.build(link, message, key_word, True)
-                    parsed_messages.append(built_message)
-                    current += 1
-                    print(f"Completed {current}")
+                    if message.date.date() >= self.__csv_data.date:
+                        built_message = await self.message_builder.build(link, message, key_word, True)
+                        parsed_messages.append(built_message)
+                        current += 1
+                        print(f"Completed {current}")
+        if len(parsed_messages) == 0:
+            print("Nothing to add")
         return parsed_messages

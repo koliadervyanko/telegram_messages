@@ -16,9 +16,10 @@ async def main():
     message_builder = MessageBuilder(client)
     message_parser = MessageParser(csv_data, client, message_builder)
     messages = await message_parser.get_messages()
-    message_json_converter = MessageJsonConverter()
-    db_api_handler = DbApiHandler(messages, message_json_converter)
-    await db_api_handler.req()
+    if messages:
+        message_json_converter = MessageJsonConverter()
+        db_api_handler = DbApiHandler(messages, message_json_converter)
+        await db_api_handler.req()
 
 
 if __name__ == "__main__":
