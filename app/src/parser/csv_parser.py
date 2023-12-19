@@ -1,4 +1,5 @@
 import csv
+import datetime
 
 from src.dto.csv_data_dto import CsvDataDto
 
@@ -14,16 +15,26 @@ class CsvParser:
             links = []
             key_words = []
             next(self.__reader)
+            parsed_date = []
             for row in self.__reader:
-                if len(row) >= 2:
-                    link = row[0]
-                    key_word = row[1]
-                    if link != "":
-                        links.append(link)
-                    if key_word != "":
-                        key_words.append(key_word)
+                print(row)
+                link = row[0]
+                key_word = row[1]
+                date = row[2]
+                if date != "":
+                    parsed_date.append(self.__get_date(date))
 
-            return CsvDataDto(links, key_words)
+                if link != "":
+                    links.append(link)
+                if key_word != "":
+                    key_words.append(key_word)
+            return CsvDataDto(links, key_words, parsed_date[0])
 
         except Exception as e:
             print(e)
+
+    @staticmethod
+    def __get_date(date: str):
+        values = date.split("/")
+        date = datetime.datetime(int(values[0]), int(values[1]), int(values[2]))
+        return date
