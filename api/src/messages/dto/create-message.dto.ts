@@ -7,5 +7,5 @@ export class CreateMessageDto {
   replies: CreateMessageDto[] | null;
   messageId: number;
   keyWord: string;
-  replyTo: CreateMessageDto | null;
+  repliedTo: CreateMessageDto | null;
 }

@@ -20,9 +20,8 @@ class DbApiHandler:
             if res.ok:
                 print(f"Added successfully | {res.status_code}")
             else:
-                print(f"Error adding | {res.status_code}")
-                print(res.text)
-
+                print(f"Error adding | {res.status_code} | {message.link}")
+                # print(res.text)
 
 
         except Exception as e:

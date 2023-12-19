@@ -24,6 +24,7 @@ export class MessagesService {
       const message = await doc.save();
       return message;
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(error);
     }
   }

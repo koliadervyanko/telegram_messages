@@ -21,7 +21,6 @@ export class Message {
   date: string;
 
   @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Message' }],
     default: null,
   })
   replies: Message[] | null;
@@ -32,8 +31,8 @@ export class Message {
   @Prop({ required: true })
   keyWord: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Message', default: null })
-  replyTo: Message | null;
+  @Prop({ default: null, type: { ...Message } })
+  repliedTo: object | null;
 }
 
 export const MessagesSchema = SchemaFactory.createForClass(Message);

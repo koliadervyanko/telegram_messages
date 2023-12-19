@@ -1,4 +1,3 @@
-from telethon.tl.types import MessageReplyHeader, MessageReplyStoryHeader
 from telethon.types import Message, User
 
 from .dto.message_dto import MessageDto
@@ -9,9 +8,10 @@ class MessageBuilder:
     def __init__(self, client):
         self.client = client
 
-    async def build(self, link: str, message: Message | MessageReplyHeader | MessageReplyStoryHeader, key_word: str,
+    async def build(self, link: str, message: Message, key_word: str,
                     use_replies: bool) -> MessageDto:
-        msg_link = self.generate_msg_link(link, message)
+
+        msg_link = self.generate_msg_link(link, message.id)
         replies = await self.get_replies(message, link, key_word) if use_replies else None
         user_data = await self.get_user_data(message)
         date = self.date_handling(message)
@@ -21,9 +21,12 @@ class MessageBuilder:
 
     async def get_replied_to(self, link: str, message: Message, key_word: str):
         if message.reply_to:
-            reply_to = await self.build(link, message.reply_to, key_word, use_replies=False)
-            return reply_to
-
+            reply_to = await self.client.get_messages(link, ids=message.reply_to.reply_to_msg_id)
+            if reply_to:
+                built_reply_to = await self.build(link, reply_to, key_word, False)
+                return built_reply_to
+            else:
+                return None
         return None
 
     @staticmethod
@@ -45,8 +48,8 @@ class MessageBuilder:
         return replies_msgs or None
 
     @staticmethod
-    def generate_msg_link(link: str, message: Message) -> str:
-        msg_link = f"{link}/{message.id}"
+    def generate_msg_link(link: str, id: int) -> str:
+        msg_link = f"{link}/{id}"
         return msg_link
 
     @staticmethod
