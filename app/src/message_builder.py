@@ -15,13 +15,13 @@ class MessageBuilder:
         replies = await self.get_replies(message, link, key_word) if use_replies else None
         user_data = await self.get_user_data(message)
         date = self.date_handling(message)
-        reply_to = self.get_replied_to(link, message, key_word)
+        reply_to = await self.get_replied_to(link, message, key_word)
         return MessageDto(user_data.username, user_data.name, message.message, msg_link, date, replies, message.id,
                           key_word, reply_to)
- 
-    def get_replied_to(self, link: str, message: Message, key_word: str):
+
+    async def get_replied_to(self, link: str, message: Message, key_word: str):
         if message.reply_to:
-            reply_to = self.build(link, message.reply_to, key_word, use_replies=False)
+            reply_to = await self.build(link, message.reply_to, key_word, use_replies=False)
             return reply_to
 
         return None

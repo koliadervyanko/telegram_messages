@@ -17,7 +17,6 @@ class CsvParser:
             next(self.__reader)
             parsed_date = []
             for row in self.__reader:
-                print(row)
                 link = row[0]
                 key_word = row[1]
                 date = row[2]
@@ -28,7 +27,7 @@ class CsvParser:
                     links.append(link)
                 if key_word != "":
                     key_words.append(key_word)
-            return CsvDataDto(links, key_words, parsed_date[0])
+            return CsvDataDto(links, key_words, parsed_date[0].date())
 
         except Exception as e:
             print(e)

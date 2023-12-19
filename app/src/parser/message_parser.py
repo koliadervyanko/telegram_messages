@@ -28,8 +28,11 @@ class MessageParser:
                 current = 0
                 message: Message
                 async for message in messages:
-                    built_message = await self.message_builder.build(link, message, key_word, True)
-                    parsed_messages.append(built_message)
-                    current += 1
-                    print(f"Completed {current}")
+                    if message.date.date() >= self.__csv_data.date:
+                        built_message = await self.message_builder.build(link, message, key_word, True)
+                        parsed_messages.append(built_message)
+                        current += 1
+                        print(f"Completed {current}")
+        if len(parsed_messages) == 0:
+            print("Nothing to add")
         return parsed_messages
