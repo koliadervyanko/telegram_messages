@@ -18,7 +18,7 @@ class EnvReader:
             print(".env parsed successfully")
             return EnvDataDto(hash, int(id))
         except Exception as e:
-            print(e)
+            print(f"Error parsing env: {e}")
 
     def load_env_file(self):
         dotenv_path = Path(self.path)
