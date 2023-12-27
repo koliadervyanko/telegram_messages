@@ -1,1 +1,3 @@
-export class CreateKeyWordDto {}
+export class CreateKeyWordDto {
+  keyWord: string;
+}

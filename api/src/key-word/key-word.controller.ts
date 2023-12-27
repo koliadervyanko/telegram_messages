@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { KeyWordService } from './key-word.service';
+import { CreateKeyWordDto } from './dto/create-key-word.dto';
 
 @Controller('key-word')
 export class KeyWordController {
@@ -13,5 +14,10 @@ export class KeyWordController {
   @Get(':keyWord')
   findOne(@Param('keyWord') keyWord: string) {
     return this.keyWordService.findOne(keyWord);
+  }
+
+  @Post()
+  create(@Body() createKeyWordDto: CreateKeyWordDto) {
+    return this.keyWordService.create(createKeyWordDto);
   }
 }

@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GroupService } from './group.service';
+import { CreateGroupDto } from './dto/create-group.dto';
 
 @Controller('group')
 export class GroupController {
@@ -8,5 +9,10 @@ export class GroupController {
   @Get()
   findAll() {
     return this.groupService.findAll();
+  }
+
+  @Post()
+  createGroup(@Body() createGroupDto: CreateGroupDto) {
+    return this.groupService.createGroup(createGroupDto);
   }
 }
