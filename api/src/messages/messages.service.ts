@@ -1,40 +1,54 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { MessageDoc, Message } from './models/message.model';
-import { Model } from 'mongoose';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MessageEntity } from './entities/message.entity';
+import { Repository } from 'typeorm';
+import { KeyWordService } from 'src/key-word/key-word.service';
+import { GroupService } from 'src/group/group.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
-    @InjectModel(Message.name) private messageModel: Model<MessageDoc>,
+    @InjectRepository(MessageEntity)
+    private repository: Repository<MessageEntity>,
+    private keyWordService: KeyWordService,
+    private groupService: GroupService,
   ) {}
   async findAll() {
     try {
-      const messages = await this.messageModel.find();
-      return messages;
+      return await this.repository.find();
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
-
   async createMessage(createMessageDto: CreateMessageDto) {
     try {
-      const doc = new this.messageModel(createMessageDto);
-      const message = await doc.save();
-      return message;
+      const keyWord = await this.keyWordService.findOne(
+        createMessageDto.keyWord,
+      );
+      const group = await this.groupService.findOne(createMessageDto.groupLink);
+      return this.repository.save({
+        comment: createMessageDto.comment,
+        date: createMessageDto.date,
+        group: group,
+        hasReplies: createMessageDto.hasReplies,
+        keyWord: keyWord,
+        name: createMessageDto.name,
+        username: createMessageDto.username,
+      });
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
   async deleteAll() {
     try {
-      const result = await this.messageModel.deleteMany({});
-      return { success: true, deletedCount: result.deletedCount };
+      const messages = await this.findAll();
+      messages.forEach(async (message) => {
+        await this.repository.delete(message);
+      });
+      return { success: true };
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException(`Error: ${error}`);
     }
   }
 }

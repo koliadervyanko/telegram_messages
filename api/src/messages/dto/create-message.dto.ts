@@ -1,11 +1,11 @@
+import { StringOrNull } from '../types/types';
+
 export class CreateMessageDto {
-  username: string | null;
-  message: string;
-  name: string | null;
-  link: string;
-  date: string;
-  replies: CreateMessageDto[] | null;
-  messageId: number;
+  groupLink: string;
   keyWord: string;
-  repliedTo: CreateMessageDto | null;
+  comment: string;
+  username: StringOrNull;
+  name: StringOrNull;
+  date: string;
+  hasReplies: boolean;
 }
