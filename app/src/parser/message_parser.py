@@ -31,7 +31,7 @@ class MessageParser:
                 print(f"Date: {self.__excel_data.date}")
                 async for message in messages:
                     if message.date.date() >= self.__excel_data.date:
-                        built_message = await self.message_builder.build(link, message, key_word, True)
+                        built_message = await self.message_builder.build(link, message, key_word, True, True)
                         parsed_messages.append(built_message)
                         current += 1
                         print(f"Completed {current}")

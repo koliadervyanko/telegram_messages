@@ -5,10 +5,6 @@ from src.env_reader import EnvReader
 from src.message_builder import MessageBuilder
 from src.parser import ExcelParser, MessageParser
 
-env_reader = EnvReader(".env")
-env_data = env_reader.get_env_data()
-client = TelegramClient("name", env_data.id, env_data.hash)
-
 
 async def main():
     excel_parser = ExcelParser("data.xlsx")
@@ -24,6 +20,9 @@ async def main():
 
 if __name__ == "__main__":
     try:
+        env_reader = EnvReader(".env")
+        env_data = env_reader.get_env_data()
+        client = TelegramClient("name", env_data.id, env_data.hash)
         with client:
             client.loop.run_until_complete(main())
     except Exception as e:
